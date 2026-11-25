@@ -4,6 +4,7 @@ import { TipLokala } from "../enums/tipLokala.enum.js";
 import type { Zaposleni } from "../../korisnik/entities/zaposleni.entity.js";
 import type { Vlasnistvo } from "./vlasnistvo.entity.js";
 import type { Proizvod } from "../../proizvod/entities/proizvod.entity.js";
+import type { ZahtevZaPosao } from "./zahtevZaPosao.entity.js";
 
 @Entity('lokali')
 export class Lokal {
@@ -24,4 +25,7 @@ export class Lokal {
 
     @OneToMany('Proizvod', 'Lokal')
     Proizvodi: Proizvod[];
+
+    @OneToMany('ZahtevZaPosao', 'Lokal')
+    ZahteviZaPosao: ZahtevZaPosao[];
 }

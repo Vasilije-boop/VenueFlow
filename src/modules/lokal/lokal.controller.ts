@@ -3,6 +3,8 @@ import { LokalService } from './lokal.service.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { Lokal } from './entities/lokal.entity.js';
 import { CreateLokalDTO } from './dtos/CreateLokalDTO.js';
+import { Proizvod } from '../proizvod/entities/proizvod.entity.js';
+import { ApplicationResponseDTO } from './dtos/ApplicationResponseDTO.js';
 
 @Controller('lokal')
 export class LokalController {
@@ -35,5 +37,19 @@ export class LokalController {
     async deleteLokal(@Param('id') id:number, @Request() req: any){
         const ulogovaniID = req.user.userID;
         return await this.lokalService.deleteLokal(id,ulogovaniID);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('applyForJob/:id')
+    async applyForJob(@Param('id') lokalID:number, @Body('Opis') opis: string, @Request() req: any):Promise<{ message: string }>{
+        const ulogovaniID = req.user.userID;
+        return await this.lokalService.applyForJob(ulogovaniID, lokalID, opis);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('getApplications/:id')
+    async addZaposleni(@Param('id') id:number, @Request() req: any):Promise<ApplicationResponseDTO[]>{
+        const ulogovaniID = req.user.userID;
+        return await this.lokalService.getApplications(id, ulogovaniID);
     }
 }

@@ -22,7 +22,4 @@ export class CreateKorisnikDTO {
 
     @IsString()
     BrojTelefona: string;
-
-    @IsBoolean()
-    VlasnikLokala: boolean;
 }

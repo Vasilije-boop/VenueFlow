@@ -36,6 +36,7 @@ export class KorisnikService {
         if (existingEmail) {
             throw new ConflictException('This email is already in use!');
         }
+
         const existingUsername = await this.korisnikRepository.findOne({
             where: { Username: newUser.Username },
         });
@@ -43,12 +44,11 @@ export class KorisnikService {
             throw new ConflictException('Username is taken!');
         }
 
-        const { BrojTelefona: brojTel, Sifra: preHashed, VlasnikLokala: vlasnik, ...korisnikPodaci } = newUser;
+        const { BrojTelefona: brojTel, Sifra: preHashed, ...korisnikPodaci } = newUser;
 
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(preHashed, saltRounds);
 
-        // koristim queryRunner jer zelim da se sve izvrsi kao deo jedne transakcije (necu da se sacuva korisnik a ne vlasnik)
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
@@ -69,25 +69,9 @@ export class KorisnikService {
                 await queryRunner.manager.save(novBroj);
             }
 
-            // if vlasnik cuvaj vlasnikLokala else cuvaj Zaposleni
-            if (vlasnik) {
-                const noviVlasnik = queryRunner.manager.create(VlasnikLokala, {
-                    Korisnik: sacuvaniKorisnik,
-                });
-                await queryRunner.manager.save(noviVlasnik);
-            } 
-            else {
-                const noviZaposleni = queryRunner.manager.create(Zaposleni, {
-                    Korisnik: sacuvaniKorisnik,
-                });
-                await queryRunner.manager.save(noviZaposleni);
-            }
-
             await queryRunner.commitTransaction();
             return sacuvaniKorisnik;
-
         } catch (err) {
-            // Ako se sjebe rollbacujem bazu
             await queryRunner.rollbackTransaction();
             throw err;
         } finally {
@@ -109,6 +93,13 @@ export class KorisnikService {
     async findByUsername(username: string): Promise<Korisnik | null> {
         const foundUser =  await this.korisnikRepository.findOne({
             where: { Username: username },
+        });
+        return foundUser;
+    }
+
+    async findByID(ID: number): Promise<Korisnik | null>{
+        const foundUser =  await this.korisnikRepository.findOne({
+            where: { ID: ID},
         });
         return foundUser;
     }

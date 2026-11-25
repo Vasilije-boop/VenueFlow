@@ -7,6 +7,8 @@ import { LokalService } from './lokal.service.js';
 import { VlasnikLokala } from '../korisnik/entities/vlasnikLokala.entity.js';
 import { Zaposleni } from '../korisnik/entities/zaposleni.entity.js';
 import { PassportModule } from '@nestjs/passport';
+import { ZahtevZaPosao } from './entities/zahtevZaPosao.entity.js';
+import { KorisnikModule } from '../korisnik/korisnik.module.js';
 
 @Module({
   imports: [
@@ -15,8 +17,10 @@ import { PassportModule } from '@nestjs/passport';
       Lokal, 
       Vlasnistvo,
       VlasnikLokala,
-      Zaposleni
+      Zaposleni,
+      ZahtevZaPosao
     ]),
+    KorisnikModule
   ],
   exports: [TypeOrmModule],
   controllers: [LokalController],

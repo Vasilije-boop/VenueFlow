@@ -10,6 +10,7 @@ import type { Zaposleni } from "./zaposleni.entity.js";
 import type { VlasnikLokala } from "./vlasnikLokala.entity.js";
 import type { BrojTelefona } from "./brojTelefona.entity.js";
 import type { Administrator } from "./administrator.entity.js";
+import type { ZahtevZaPosao } from "../../lokal/entities/zahtevZaPosao.entity.js";
 
 @Entity('korisnici')
 export class Korisnik {
@@ -45,4 +46,7 @@ export class Korisnik {
 
     @OneToMany('BrojTelefona', 'Korisnik', { cascade: true })
     BrojeviTelefona: BrojTelefona[];
+
+    @OneToMany('ZahtevZaPosao', 'Korisnik')
+    ZahteviZaPosao: ZahtevZaPosao[];
 }
